@@ -1,4 +1,4 @@
-# FastAPI Book Management API
+FastAPI Book Management API
 
 ## Overview
 
@@ -16,7 +16,7 @@ This project is a RESTful API built with FastAPI for managing a book collection.
 ## Project Structure
 
 ```
-fastapi-book-project/
+hngx-stage2-fastapi-book-ci-cd/
 ├── api/
 │   ├── db/
 │   │   ├── __init__.py
@@ -33,7 +33,11 @@ fastapi-book-project/
 │   └── test_books.py       # API endpoint tests
 ├── main.py                 # Application entry point
 ├── requirements.txt        # Project dependencies
-└── README.md
+├── README.md
+└── .github/
+        └── workflows/
+                ├── cd.yaml
+                └── ci.yaml
 ```
 
 ## Technologies Used
@@ -49,14 +53,14 @@ fastapi-book-project/
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/hng12-devbotops/fastapi-book-project.git
-cd fastapi-book-project
+git clone  https://github.com/Akeemmudash/hngx-stage2-fastapi-book-ci-cd.git
+cd hngx-stage2-fastapi-book-ci-cd
 ```
 
 2. Create a virtual environment:
 
 ```bash
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 

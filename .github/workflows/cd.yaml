@@ -1,0 +1,51 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          # Setup SSH Key
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" | base64 --decode > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+
+          # SSH into the server and deploy
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
+            set -e
+
+            # Clone repo if repo does not exists, else pull latest changes
+            if [ ! -d "$HOME/hngx-stage2-fastapi-book-project-ci-cd" ]; then
+              git clone https://github.com/akeemmudash/hngx-stage2-fastapi-book-project-ci-cd.git
+            fi
+            
+            cd hngx-stage2-fastapi-book-project-ci-cd
+
+            git fetch origin main
+            git reset --hard origin/main
+
+            # install dependencies 
+            python3 -m venv venv
+            source venv/bin/activate
+            pip install -r requirements.txt
+
+            # Restart the FastAPI application
+            pkill -f "uvicorn main:app" || true
+            nohup uvicorn main:app --host 0.0.0.0 --port 8000 > app.log 2>&1 &
+            echo "✅ 🚀 Deployment successful!"
+          EOF
