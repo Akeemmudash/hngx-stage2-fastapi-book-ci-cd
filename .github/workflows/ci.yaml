@@ -5,9 +5,9 @@ on:
     branches: main
 
 jobs:
-  Tests:
+  test:
     runs-on: ubuntu-latest
-    name: Tests
+    name: test
 
     steps:
       - name: Checkout repository code
